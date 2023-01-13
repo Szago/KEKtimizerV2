@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace KEKTIMIZERv2
 {
@@ -43,9 +45,60 @@ namespace KEKTIMIZERv2
 
             UpdateButtonStatus();
 
-           
+            string gitHubApiUrl = "https://api.github.com/repos/Szago/KEKtimizerV2/releases/latest";
 
-    }
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add("User-Agent", "KEKtimizerV2");
+                string json = client.DownloadString(gitHubApiUrl);
+                dynamic release = JsonConvert.DeserializeObject(json);
+                string latestVersion = release.tag_name;
+                if (latestVersion != Application.ProductVersion)
+                {
+                    // A new version is available, show a message to the user
+                    //MessageBox.Show(latestVersion);
+                    //MessageBox.Show(Application.ProductVersion);
+
+                    Form customForm = new Form();
+                    customForm.Text = "NEW VERSION AVAILABLE";
+                    customForm.Width = 250;
+                    customForm.Height = 200;
+                    customForm.StartPosition = FormStartPosition.CenterScreen;
+                    customForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+                    customForm.MaximizeBox = false;
+                    customForm.MinimizeBox = false;
+
+
+                    Label label = new Label();
+                    label.Text = "NEW VERSION AVAILABLE!!!";
+                    label.Location = new Point(45, 50);
+                    label.AutoSize = true;
+
+                    LinkLabel linkLabel = new LinkLabel();
+                    linkLabel.Text = ">> DOWNLOAD HERE <<";
+                    linkLabel.Links.Add(0, linkLabel.Text.Length, "https://github.com/Szago/KEKtimizerV2/releases/latest");
+                    linkLabel.LinkClicked += (sender, e) => Process.Start(e.Link.LinkData.ToString());
+                    linkLabel.Location = new Point(50, 80);
+                    linkLabel.AutoSize = true;
+
+                    Button okButton = new Button();
+                    okButton.Text = "OK";
+                    okButton.Width = 60;
+                    okButton.Height = 30;
+                    okButton.Anchor = AnchorStyles.Bottom;
+                    okButton.Location = new Point(85, 120);
+                    okButton.Click += (sender, e) => customForm.Close();
+                    customForm.Controls.Add(okButton);
+
+                    customForm.Controls.Add(label);
+                    customForm.Controls.Add(linkLabel);
+
+                    customForm.ShowDialog();
+
+                }
+            }
+
+        }
         private void UpdateProgressBarMax(int value)
         {
             if (progressBar1.InvokeRequired)
