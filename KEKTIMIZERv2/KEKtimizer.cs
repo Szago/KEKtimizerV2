@@ -46,30 +46,78 @@ namespace KEKTIMIZERv2
            
 
     }
- 
+        private void UpdateProgressBarMax(int value)
+        {
+            if (progressBar1.InvokeRequired)
+            {
+                progressBar1.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Maximum += value;
+                });
+            }
+            else
+            {
+                progressBar1.Maximum += value;
+            }
+        }
+        private void UpdateProgressBar(int value)
+        {
+            if (progressBar1.InvokeRequired)
+            {
+                progressBar1.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Value += value;
+                });
+            }
+            else
+            {
+                progressBar1.Value += value;
+            }
+        }
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            progressBar1.Maximum = 1;
-            progressBar1.Value += 1;
+            if (progressBar1.InvokeRequired)
+            {
+                progressBar1.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Maximum = 1;
+                });
+            }
+            else
+            {
+                progressBar1.Maximum = 1;
+            }
 
+
+            UpdateProgressBar(1);
+            
             if (checkBox1.Checked)
-                progressBar1.Maximum += 4;
+                UpdateProgressBarMax(4);
             if (checkBox2.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox3.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox4.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox5.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox6.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox7.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
             if (checkBox8.Checked)
-                progressBar1.Maximum += 2;
+                UpdateProgressBarMax(2);
+            if (checkBox9.Checked)
+                UpdateProgressBarMax(2);
+            if (checkBox10.Checked)
+                UpdateProgressBarMax(2);
+            if (checkBox11.Checked)
+                UpdateProgressBarMax(2);
+            
+        
+        
 
-
+        
 
 
             if (checkBox1.Checked)
@@ -78,10 +126,10 @@ namespace KEKTIMIZERv2
 
                 // Change the current directory to C:\
                 Directory.SetCurrentDirectory(_selectedPath);
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 // Create a new directory called "Backup"
                 Directory.CreateDirectory(@"Backup");
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
 
 
                 //regbackup
@@ -93,17 +141,17 @@ namespace KEKTIMIZERv2
                 process.StartInfo.Arguments = $"export HKLM \"{_selectedPath}\\Backup\\HKLM.Reg\" /y";
                 process.Start();
                 process.WaitForExit();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
 
                 process.StartInfo.Arguments = $"export HKCU \"{_selectedPath}\\Backup\\HKCU.Reg\" /y";
                 process.Start();
                 process.WaitForExit();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
             }
             if (checkBox2.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Microsoft.Win32.RegistryKey key;
                 key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR");
                 key.SetValue("value", 0, Microsoft.Win32.RegistryValueKind.DWord);
@@ -123,13 +171,13 @@ namespace KEKTIMIZERv2
                 key.SetValue("NoLazyMode", 1, Microsoft.Win32.RegistryValueKind.DWord);
                 key.SetValue("AlwaysOn", 1, Microsoft.Win32.RegistryValueKind.DWord);
                 key.Close();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
 
             }
             if (checkBox3.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Process process2 = new Process();
                 process2.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process2.StartInfo.FileName = "bcdedit";
@@ -149,14 +197,14 @@ namespace KEKTIMIZERv2
                 process2.StartInfo.Arguments = "/set tscsyncpolicy Enhanced";
                 process2.Start();
                 process2.WaitForExit();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
 
             }
 
             if (checkBox4.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Process process3 = new Process();
                 process3.StartInfo.FileName = "powercfg";
 
@@ -171,44 +219,44 @@ namespace KEKTIMIZERv2
                 process3.StartInfo.Arguments = "-setactive 95533644-e700-4a79-a56c-a89e8cb109d9";
                 process3.Start();
                 process3.WaitForExit();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
 
             }
             if(checkBox5.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Microsoft.Win32.RegistryKey key;
                 key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender");
                 key.SetValue("DisableAntiSpyware", 1, Microsoft.Win32.RegistryValueKind.DWord);
                 key.Close();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
             }
             if(checkBox6.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Microsoft.Win32.RegistryKey key;
                 key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform");
                 key.SetValue("NoGenuineNotification", 1, Microsoft.Win32.RegistryValueKind.DWord);
                 key.Close();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 
             }
             if(checkBox7.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Microsoft.Win32.RegistryKey key;
                 key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Control Panel\Mouse");
                 key.SetValue("MouseThreshold1", 0, Microsoft.Win32.RegistryValueKind.DWord);
                 key.SetValue("MouseThreshold2", 0, Microsoft.Win32.RegistryValueKind.DWord);
                 key.SetValue("MouseSpeed", 0, Microsoft.Win32.RegistryValueKind.DWord);                
                 key.Close();
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
             }
             if (checkBox8.Checked)
             {
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                 Microsoft.Win32.RegistryKey key;
                 key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search");
                 key.SetValue("AllowCortana", 0, Microsoft.Win32.RegistryValueKind.DWord);
@@ -217,16 +265,50 @@ namespace KEKTIMIZERv2
                 key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Explorer");
                 key.SetValue("DisableSearchBoxSuggestions", 1, Microsoft.Win32.RegistryValueKind.DWord);
                 key.Close();                
-                progressBar1.Value += 1;
+                UpdateProgressBar(1);
                
             }
 
-            if (checkBox6.Checked)
+            if (checkBox9.Checked)
+            {
+                UpdateProgressBar(1);
+                Microsoft.Win32.RegistryKey key;
+                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance");
+                key.SetValue("MaintenanceDisabled", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                key.Close();
+                UpdateProgressBar(1);
+            }
+            if (checkBox10.Checked)
             {
 
+                UpdateProgressBar(1);
+                string godmode = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + @"\GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}";
+                System.IO.Directory.CreateDirectory(godmode);
+                UpdateProgressBar(1);
             }
-            MessageBox.Show("Complete!");
-            progressBar1.Value = 0;
+            if (checkBox11.Checked)
+            {
+                UpdateProgressBar(1);
+                Microsoft.Win32.RegistryKey key;
+                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update");
+                key.SetValue("AutoUpdateCheckPeriodMinutes", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                key.Close();
+                UpdateProgressBar(1);
+            }
+            System.Threading.Thread.Sleep(1000);
+
+            MessageBox.Show("Complete! Chuju.");
+            if (progressBar1.InvokeRequired)
+            {
+                progressBar1.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Value = 0;
+                });
+            }
+            else
+            {
+                progressBar1.Value = 0;
+            }
         }
         
         private void Button2_Click(object sender, EventArgs e)
@@ -252,7 +334,7 @@ namespace KEKTIMIZERv2
         private void UpdateButtonStatus()
         {
             // Check if any of the checkboxes are checked
-            bool anyChecked = checkBox1.Checked || checkBox2.Checked || checkBox3.Checked || checkBox4.Checked || checkBox5.Checked || checkBox6.Checked || checkBox7.Checked || checkBox8.Checked;
+            bool anyChecked = checkBox1.Checked || checkBox2.Checked || checkBox3.Checked || checkBox4.Checked || checkBox5.Checked || checkBox6.Checked || checkBox7.Checked || checkBox8.Checked || checkBox9.Checked || checkBox10.Checked || checkBox11.Checked;
 
             // Enable or disable the button based on whether any checkboxes are checked
             button1.Enabled = anyChecked;
@@ -306,7 +388,10 @@ namespace KEKTIMIZERv2
         {
             UpdateButtonStatus();
         }
-
+        private void checkBox9_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateButtonStatus();
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             checkBox1.Checked = true;
@@ -314,9 +399,8 @@ namespace KEKTIMIZERv2
             checkBox3.Checked = true;
             checkBox4.Checked = true;
             checkBox7.Checked = true;
-
+            checkBox9.Checked = true;
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             checkBox1.Checked = false;
@@ -327,12 +411,25 @@ namespace KEKTIMIZERv2
             checkBox6.Checked = false;
             checkBox7.Checked = false;
             checkBox8.Checked = false;
-        }
+            checkBox9.Checked = false;
+            checkBox10.Checked = false;
+            checkBox11.Checked = false;
 
+        }
         private void KEKtimizer_Load(object sender, EventArgs e)
         {
         
 
+        }
+
+        private void checkBox10_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateButtonStatus();
+        }
+
+        private void checkBox11_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateButtonStatus();
         }
     }
 }
