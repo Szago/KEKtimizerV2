@@ -232,23 +232,16 @@ namespace KEKTIMIZERv2
             {
                 UpdateProgressBar(1);
                 Process process2 = new Process();
-                process2.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                process2.StartInfo.FileName = "bcdedit";
-
-                process2.StartInfo.Arguments = "/set useplatformclock No";
+                //process2.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; kij wie czy potrzebne ale moze sie przydac
+                process2.StartInfo.FileName = "cmd.exe";
+                process2.StartInfo.Arguments = "/c bcdedit /set useplatformclock No && bcdedit /set useplatformtick No && bcdedit /set disabledynamictick Yes && bcdedit /set tscsyncpolicy Enhanced";
+                process2.StartInfo.RedirectStandardOutput = true;
+                process2.StartInfo.UseShellExecute = false;
                 process2.Start();
-                process2.WaitForExit();
 
-                process2.StartInfo.Arguments = "/set useplatformtick No";
-                process2.Start();
-                process2.WaitForExit();
+                string output = process2.StandardOutput.ReadToEnd();
+                Console.WriteLine(output);
 
-                process2.StartInfo.Arguments = "/set disabledynamictick Yes";
-                process2.Start();
-                process2.WaitForExit();
-
-                process2.StartInfo.Arguments = "/set tscsyncpolicy Enhanced";
-                process2.Start();
                 process2.WaitForExit();
                 UpdateProgressBar(1);
                 
