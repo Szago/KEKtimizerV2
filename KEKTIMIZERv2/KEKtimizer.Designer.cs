@@ -60,7 +60,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(176, 58);
             this.button1.TabIndex = 0;
-            this.button1.Text = "KEKTIMIZE";
+            this.button1.Text = "OPTIMIZE";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -203,9 +203,9 @@
             this.checkBox8.ForeColor = System.Drawing.Color.White;
             this.checkBox8.Location = new System.Drawing.Point(12, 250);
             this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(302, 28);
+            this.checkBox8.Size = new System.Drawing.Size(300, 28);
             this.checkBox8.TabIndex = 11;
-            this.checkBox8.Text = "Disable Windows Search bullshit";
+            this.checkBox8.Text = "Disable Windows Search in web";
             this.checkBox8.UseVisualStyleBackColor = false;
             this.checkBox8.CheckedChanged += new System.EventHandler(this.checkBox8_CheckedChanged);
             // 

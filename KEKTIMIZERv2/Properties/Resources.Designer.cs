@@ -59,15 +59,5 @@ namespace KEKTIMIZERv2.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Wyszukuje zlokalizowany zasób typu System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _64496796ce29a9alko {
-            get {
-                object obj = ResourceManager.GetObject("64496796ce29a9alko", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

@@ -175,175 +175,272 @@ namespace KEKTIMIZERv2
 
             if (checkBox1.Checked)
             {
+                try
+                {
+
+                    // Change the current directory to C:\
+                    Directory.SetCurrentDirectory(_selectedPath);
+                    UpdateProgressBar(1);
+                    // Create a new directory called "Backup"
+                    Directory.CreateDirectory(@"Backup");
+                    UpdateProgressBar(1);
 
 
-                // Change the current directory to C:\
-                Directory.SetCurrentDirectory(_selectedPath);
-                UpdateProgressBar(1);
-                // Create a new directory called "Backup"
-                Directory.CreateDirectory(@"Backup");
-                UpdateProgressBar(1);
+                    //regbackup
+                    Process process = new Process();
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    process.StartInfo.FileName = "reg";
 
 
-                //regbackup
-                Process process = new Process();
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                process.StartInfo.FileName = "reg";
+                    process.StartInfo.Arguments = $"export HKLM \"{_selectedPath}\\Backup\\HKLM.Reg\" /y";
+                    process.Start();
+                    process.WaitForExit();
+                    UpdateProgressBar(1);
 
-
-                process.StartInfo.Arguments = $"export HKLM \"{_selectedPath}\\Backup\\HKLM.Reg\" /y";
-                process.Start();
-                process.WaitForExit();
-                UpdateProgressBar(1);
-
-                process.StartInfo.Arguments = $"export HKCU \"{_selectedPath}\\Backup\\HKCU.Reg\" /y";
-                process.Start();
-                process.WaitForExit();
-                UpdateProgressBar(1);
+                    process.StartInfo.Arguments = $"export HKCU \"{_selectedPath}\\Backup\\HKCU.Reg\" /y";
+                    process.Start();
+                    process.WaitForExit();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
                 
             }
             if (checkBox2.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR");
-                key.SetValue("value", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR");
+                    key.SetValue("value", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
 
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games");
-                key.SetValue("GPU Priority", 8, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("Priority", 6, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("Scheduling Category", "High", Microsoft.Win32.RegistryValueKind.String);
-                key.SetValue("Latency Sensitive", "True", Microsoft.Win32.RegistryValueKind.String);
-                key.SetValue("SFIO Priority", "High", Microsoft.Win32.RegistryValueKind.String);
-                key.Close();
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games");
+                    key.SetValue("GPU Priority", 8, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("Priority", 6, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("Scheduling Category", "High", Microsoft.Win32.RegistryValueKind.String);
+                    key.SetValue("Latency Sensitive", "True", Microsoft.Win32.RegistryValueKind.String);
+                    key.SetValue("SFIO Priority", "High", Microsoft.Win32.RegistryValueKind.String);
+                    key.Close();
 
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile");
-                key.SetValue("NetworkThrottlingIndex", Convert.ToInt32("ffffffff", 16), Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("SystemResponsiveness", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("NoLazyMode", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("AlwaysOn", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                UpdateProgressBar(1);
-                
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile");
+                    key.SetValue("NetworkThrottlingIndex", Convert.ToInt32("ffffffff", 16), Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("SystemResponsiveness", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("NoLazyMode", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("AlwaysOn", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
 
             }
             if (checkBox3.Checked)
             {
-                UpdateProgressBar(1);
-                Process process2 = new Process();
-                //process2.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; kij wie czy potrzebne ale moze sie przydac
-                process2.StartInfo.FileName = "cmd.exe";
-                process2.StartInfo.Arguments = "/c bcdedit /set useplatformclock No && bcdedit /set useplatformtick No && bcdedit /set disabledynamictick Yes && bcdedit /set tscsyncpolicy Enhanced";
-                process2.StartInfo.RedirectStandardOutput = true;
-                process2.StartInfo.UseShellExecute = false;
-                process2.Start();
+                try
+                {
+                    UpdateProgressBar(1);
 
-                string output = process2.StandardOutput.ReadToEnd();
-                Console.WriteLine(output);
+                    Process process2 = new Process();
+                    process2.StartInfo.FileName = @"C:\Windows\Sysnative\bcdedit"; // Ścieżka do bcdedit
+                    process2.StartInfo.Verb = "runas";  // Uruchamianie z uprawnieniami administratora
+                    process2.StartInfo.RedirectStandardOutput = true;
+                    process2.StartInfo.UseShellExecute = false;
 
-                process2.WaitForExit();
-                UpdateProgressBar(1);
-                
+                    process2.StartInfo.Arguments = "/set useplatformclock No";
+                    process2.Start();
+                    string output = process2.StandardOutput.ReadToEnd();
+                    Console.WriteLine(output);
+                    process2.WaitForExit();
+
+                    process2.StartInfo.Arguments = "/set useplatformtick No";
+                    process2.Start();
+                    output = process2.StandardOutput.ReadToEnd();
+                    Console.WriteLine(output);
+                    process2.WaitForExit();
+
+                    process2.StartInfo.Arguments = "/set disabledynamictick Yes";
+                    process2.Start();
+                    output = process2.StandardOutput.ReadToEnd();
+                    Console.WriteLine(output);
+                    process2.WaitForExit();
+
+                    process2.StartInfo.Arguments = "/set tscsyncpolicy Enhanced";
+                    process2.Start();
+                    output = process2.StandardOutput.ReadToEnd();
+                    Console.WriteLine(output);
+                    process2.WaitForExit();
+
+                    UpdateProgressBar(1);
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Wystąpił błąd: " + ex.Message);
+                }
 
             }
 
             if (checkBox4.Checked)
             {
-                UpdateProgressBar(1);
-                Process process3 = new Process();
-                process3.StartInfo.FileName = "powercfg";
+                try
+                {
+                    UpdateProgressBar(1);
+                    Process process3 = new Process();
+                    process3.StartInfo.FileName = "powercfg";
 
-                process3.StartInfo.Arguments = "-duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 95533644-e700-4a79-a56c-a89e8cb109d9";
-                process3.Start();
-                process3.WaitForExit();
+                    process3.StartInfo.Arguments = "-duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 95533644-e700-4a79-a56c-a89e8cb109d9";
+                    process3.Start();
+                    process3.WaitForExit();
 
-                process3.StartInfo.Arguments = "-changename 95533644-e700-4a79-a56c-a89e8cb109d9 SPEED";
-                process3.Start();
-                process3.WaitForExit();
+                    process3.StartInfo.Arguments = "-changename 95533644-e700-4a79-a56c-a89e8cb109d9 SPEED";
+                    process3.Start();
+                    process3.WaitForExit();
 
-                process3.StartInfo.Arguments = "-setactive 95533644-e700-4a79-a56c-a89e8cb109d9";
-                process3.Start();
-                process3.WaitForExit();
-                UpdateProgressBar(1);
-                
+                    process3.StartInfo.Arguments = "-setactive 95533644-e700-4a79-a56c-a89e8cb109d9";
+                    process3.Start();
+                    process3.WaitForExit();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
 
             }
-            if(checkBox5.Checked)
+            if(checkBox5.Checked)                
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender");
-                key.SetValue("DisableAntiSpyware", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                UpdateProgressBar(1);
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender");
+                    key.SetValue("DisableAntiSpyware", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
                 
             }
             if(checkBox6.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform");
-                key.SetValue("NoGenuineNotification", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                UpdateProgressBar(1);
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform");
+                    key.SetValue("NoGenuineNotification", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
                 
             }
             if(checkBox7.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Control Panel\Mouse");
-                key.SetValue("MouseThreshold1", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("MouseThreshold2", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("MouseSpeed", 0, Microsoft.Win32.RegistryValueKind.DWord);                
-                key.Close();
-                UpdateProgressBar(1);
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Control Panel\Mouse");
+                    key.SetValue("MouseThreshold1", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("MouseThreshold2", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("MouseSpeed", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
             }
             if (checkBox8.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search");
-                key.SetValue("AllowCortana", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.SetValue("BingSearchEnabled", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Explorer");
-                key.SetValue("DisableSearchBoxSuggestions", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();                
-                UpdateProgressBar(1);
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search");
+                    key.SetValue("AllowCortana", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("BingSearchEnabled", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Explorer");
+                    key.SetValue("DisableSearchBoxSuggestions", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
                
             }
 
             if (checkBox9.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance");
-                key.SetValue("MaintenanceDisabled", 1, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                UpdateProgressBar(1);
+                try
+                {
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance");
+                    key.SetValue("MaintenanceDisabled", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
             }
             if (checkBox10.Checked)
             {
+                try
+                {
 
-                UpdateProgressBar(1);
-                string godmode = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + @"\GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}";
-                System.IO.Directory.CreateDirectory(godmode);
-                UpdateProgressBar(1);
+
+                    UpdateProgressBar(1);
+                    string godmode = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + @"\GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}";
+                    System.IO.Directory.CreateDirectory(godmode);
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
             }
             if (checkBox11.Checked)
             {
-                UpdateProgressBar(1);
-                Microsoft.Win32.RegistryKey key;
-                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update");
-                key.SetValue("AutoUpdateCheckPeriodMinutes", 0, Microsoft.Win32.RegistryValueKind.DWord);
-                key.Close();
-                UpdateProgressBar(1);
+                try
+                {
+
+
+                    UpdateProgressBar(1);
+                    Microsoft.Win32.RegistryKey key;
+                    key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update");
+                    key.SetValue("AutoUpdateCheckPeriodMinutes", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.Close();
+                    UpdateProgressBar(1);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR: .");
+                }
             }
             System.Threading.Thread.Sleep(1000);
 
-            MessageBox.Show("Complete! Chuju.");
+            MessageBox.Show("Complete!");
             if (progressBar1.InvokeRequired)
             {
                 progressBar1.Invoke((MethodInvoker)delegate
